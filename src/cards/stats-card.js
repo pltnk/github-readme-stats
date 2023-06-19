@@ -78,7 +78,7 @@ const createTextNode = ({
  * @param {Partial<import("./types").StatCardOptions>} options The card options.
  * @returns {string} The stats card SVG object.
  */
-const renderStatsCard = (stats = {}, options = { hide: [] }) => {
+const renderStatsCard = (stats = {}, options = {}) => {
   const {
     name,
     totalStars,
@@ -86,6 +86,8 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
     totalIssues,
     totalPRs,
     totalReviews,
+    totalDiscussionsStarted,
+    totalDiscussionsAnswered,
     contributedTo,
     rank,
   } = stats;
@@ -112,7 +114,7 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
     locale,
     disable_animations = false,
     rank_icon = "default",
-    show_total_reviews = false,
+    show = [],
   } = options;
 
   const lheight = parseInt(String(line_height), 10);
@@ -160,21 +162,8 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
     value: totalPRs,
     id: "prs",
   };
-  STATS.issues = {
-    icon: icons.issues,
-    label: i18n.t("statcard.issues"),
-    value: totalIssues,
-    id: "issues",
-  };
-  STATS.contribs = {
-    icon: icons.contribs,
-    label: i18n.t("statcard.contribs"),
-    value: contributedTo,
-    id: "contribs",
-  };
 
-  // Extra stats items.
-  if (show_total_reviews) {
+  if (show.includes("reviews")) {
     STATS.reviews = {
       icon: icons.reviews,
       label: i18n.t("statcard.reviews"),
@@ -182,6 +171,37 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
       id: "reviews",
     };
   }
+
+  STATS.issues = {
+    icon: icons.issues,
+    label: i18n.t("statcard.issues"),
+    value: totalIssues,
+    id: "issues",
+  };
+
+  if (show.includes("discussions_started")) {
+    STATS.discussions_started = {
+      icon: icons.discussions_started,
+      label: i18n.t("statcard.discussions-started"),
+      value: totalDiscussionsStarted,
+      id: "discussions_started",
+    };
+  }
+  if (show.includes("discussions_answered")) {
+    STATS.discussions_answered = {
+      icon: icons.discussions_answered,
+      label: i18n.t("statcard.discussions-answered"),
+      value: totalDiscussionsAnswered,
+      id: "discussions_answered",
+    };
+  }
+
+  STATS.contribs = {
+    icon: icons.contribs,
+    label: i18n.t("statcard.contribs"),
+    value: contributedTo,
+    id: "contribs",
+  };
 
   const longLocales = [
     "cn",
